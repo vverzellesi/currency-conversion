@@ -1,4 +1,11 @@
-import { Controller, Get, Query, ValidationPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Headers,
+  Query,
+  UnauthorizedException,
+  ValidationPipe,
+} from '@nestjs/common';
 import { GetExchangeRateDto } from './dto/get-exchange.dto';
 import { ExchangeService } from './exchange.service';
 
@@ -15,9 +22,13 @@ export class ExchangeController {
 
   @Get()
   getExchange(
-    @Query(ValidationPipe)
-    query: GetExchangeRateDto,
+    @Query(ValidationPipe) query: GetExchangeRateDto,
+    @Headers('apiKey') apiKey: string,
   ): Promise<ExchangeRateResponse> {
-    return this.exchangeService.getExchange(query.from, query.to, query.amount);
+    if (apiKey) {
+      return this.exchangeService.getExchange(query.from, query.to, query.amount);
+    } else {
+      throw new UnauthorizedException('API Key is missing');
+    }
   }
 }

@@ -15,9 +15,6 @@ export class UserController {
     async createUser(
         @Body() userData: CreateUserDto,
     ): Promise<CreateUserResponse> {
-        const user = await this.userService.createUser(userData);
-
-        // return { apiKey: user.apiKey }; // Return the API key to the user.
-        return user;
+        return await this.userService.createUser(userData);
     }
 }
